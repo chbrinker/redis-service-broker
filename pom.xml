@@ -38,7 +38,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.evoila.cf.broker</groupId>
-			<artifactId>persistence-mongodv</artifactId>
+			<artifactId>persistence-mongodb</artifactId>
 			<version>${persistence.version}</version>
 		</dependency>
 	</dependencies>
