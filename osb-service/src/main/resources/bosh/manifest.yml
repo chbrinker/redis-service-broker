@@ -21,9 +21,11 @@ stemcells:
 instance_groups:
 - name: redis
   instances: 3
+  azs:
+  - z1
   jobs:
-    - name: redis
-      release: osb-redis
+  - name: redis
+    release: osb-redis
   vm_type: default
   stemcell: default
   networks:
@@ -31,11 +33,13 @@ instance_groups:
   persistent_disk: 0
   properties:
     redis:
-      password: sample123
+      password: random123
 
 - name: cluster-configuration
   instances: 1
   lifecycle: errand
+  azs:
+  - z1
   jobs:
   - name: cluster-config
     release: osb-redis

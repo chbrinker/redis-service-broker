@@ -24,7 +24,8 @@ import java.util.Optional;
 @Service
 @ConditionalOnBean(BoshProperties.class)
 public class RedisBoshPlatformService extends BoshPlatformService {
-    private static final int defaultPort = 27017;
+
+    private static final int defaultPort = 6379;
 
     RedisBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
                              ServicePortAvailabilityVerifier availabilityVerifier,
@@ -45,8 +46,10 @@ public class RedisBoshPlatformService extends BoshPlatformService {
 
     protected void runDeleteErrands(ServiceInstance instance, Deployment deployment, Observable<List<ErrandSummary>> errands) { }
 
+    // TODO: Discuss how the deployment name, which is currently prefixed with "sb-" should be
+    // handled
     @Override
-    protected void updateHosts(ServiceInstance in, Plan plan, Deployment deployment) {
+    protected void updateHosts(ServiceInstance serviceInstance, Plan plan, Deployment deployment) {
         final int port;
         if (plan.getMetadata().containsKey(RedisDeploymentManager.PORT)) {
             port = (int) plan.getMetadata().get(RedisDeploymentManager.PORT);
@@ -54,14 +57,14 @@ public class RedisBoshPlatformService extends BoshPlatformService {
             port = defaultPort;
         }
 
-        List<Vm> vms = connection.connection().vms().listDetails(in.getId()).toBlocking().first();
-        if(in.getHosts() == null)
-            in.setHosts(new ArrayList<>());
+        List<Vm> vms = connection.connection().vms().listDetails("sb-" + serviceInstance.getId()).toBlocking().first();
+        if(serviceInstance.getHosts() == null)
+            serviceInstance.setHosts(new ArrayList<>());
 
-        in.getHosts().clear();
+        serviceInstance.getHosts().clear();
 
         vms.forEach(vm -> {
-            in.getHosts().add(new ServerAddress("Host-" + vm.getIndex(), vm.getIps().get(0), port));
+            serviceInstance.getHosts().add(new ServerAddress("Host-" + vm.getIndex(), vm.getIps().get(0), port));
         });
     }
 }

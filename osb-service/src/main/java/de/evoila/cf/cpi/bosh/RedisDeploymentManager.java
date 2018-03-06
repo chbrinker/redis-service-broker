@@ -8,9 +8,12 @@ import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class RedisDeploymentManager extends DeploymentManager {
 
+    public static final String INSTANCE_GROUP = "redis";
+    public static final String REDIS_PASSWORD = "password";
     public static final String NODES = "nodes";
     public static final String PORT = "port";
     public static final String VM_TYPE = "vm_type";
@@ -20,10 +23,21 @@ public class RedisDeploymentManager extends DeploymentManager {
         super(boshProperties);
     }
 
-    protected void replaceParameters(ServiceInstance instance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
+    @Override
+    protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
         HashMap<String, Object> properties = new HashMap<>();
         properties.putAll(plan.getMetadata());
         properties.putAll(customParameters);
+
+        Map<String, Object> manifestProperties = manifest.getInstance_groups()
+                .stream()
+                .filter(i -> i.getName().equals(INSTANCE_GROUP))
+                .findAny().get().getProperties();
+        HashMap<String, Object> redis = (HashMap<String, Object>) manifestProperties.get("redis");
+
+        String randomPassword = UUID.randomUUID().toString().replace("-", "");
+        serviceInstance.setPassword(randomPassword);
+        redis.put(REDIS_PASSWORD, randomPassword);
 
         if(properties.containsKey(NODES)){
             manifest.getInstance_groups().get(0).setInstances((Integer) properties.get(NODES));

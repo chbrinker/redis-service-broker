@@ -3,18 +3,16 @@
  */
 package de.evoila.cf.broker.custom;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import de.evoila.cf.broker.model.*;
+import de.evoila.cf.broker.service.impl.BindingServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import de.evoila.cf.broker.exception.ServiceBrokerException;
-import de.evoila.cf.broker.service.impl.BindingServiceImpl;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Johannes Hiemer.
@@ -26,8 +24,8 @@ public class RedisBindingService extends BindingServiceImpl {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	protected Map<String, Object> createCredentials(String bindingId, ServiceInstance serviceInstance,
-			List<ServerAddress> hosts) throws ServiceBrokerException {
-        String password = "thisMustBeFetchedFromDeployment";
+			List<ServerAddress> hosts) {
+        String password = serviceInstance.getPassword();
 
         String formattedHosts = "";
         for (ServerAddress host : hosts) {
@@ -36,16 +34,19 @@ public class RedisBindingService extends BindingServiceImpl {
             formattedHosts += String.format("%s:%d", host.getIp(), host.getPort());
         }
 
-        String dbURL = String.format("redis://%s:%s@%s", bindingId, password, formattedHosts);
+        String dbURL = String.format("redis://%s", formattedHosts);
 
-		Map<String, Object> credentials = new HashMap<String, Object>();
+		Map<String, Object> credentials = new HashMap<>();
 		credentials.put("uri", dbURL);
+        credentials.put("password", password);
+        credentials.put("host", formattedHosts);
+        credentials.put("port", hosts.get(0).getPort());
 
 		return credentials;
 	}
 
 	@Override
-	protected void deleteBinding(String bindingId, ServiceInstance serviceInstance) throws ServiceBrokerException {
+	protected void deleteBinding(String bindingId, ServiceInstance serviceInstance) {
 		log.debug("unbind Service");
 	}
 
@@ -64,7 +65,7 @@ public class RedisBindingService extends BindingServiceImpl {
      */
     @Override
     protected Map<String, Object> createCredentials(String bindingId, ServiceInstance serviceInstance,
-                                                    ServerAddress host, Plan plan) throws ServiceBrokerException {
+                                                    ServerAddress host, Plan plan) {
         List<ServerAddress> hosts = new ArrayList<>();
         hosts.add(host);
 
