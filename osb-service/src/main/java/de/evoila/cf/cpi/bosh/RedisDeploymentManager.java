@@ -51,10 +51,5 @@ public class RedisDeploymentManager extends DeploymentManager {
             manifest.getInstance_groups().get(0).setVm_type((String) properties.get(DISK_TYPE));
         }
 
-        if(properties.containsKey(DISK_TYPE)){
-            manifest.getInstance_groups().get(0).setVm_type((String) properties.get(DISK_TYPE));
-        }
     }
-
-
 }
