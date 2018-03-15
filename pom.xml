@@ -86,12 +86,6 @@
                             <goals>
                                 <goal>repackage</goal>
                             </goals>
-                            <configuration>
-                                <classifier>spring-boot</classifier>
-                                <mainClass>
-                                    de.evoila.Application
-                                </mainClass>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

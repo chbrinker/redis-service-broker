@@ -2,13 +2,16 @@
 instances: 1
 timeout: 180
 memory: 1024M
-domain:
+domain: cf.dev.eu-de-central.msh.host
 applications:
-- name: redis
-  host: redis
-  path: target/ssb-redis.jar
+- name: redis-dev
+  host: redis-dev
+  path: osb-service/target/cf-service-broker-redis-1.2.0.jar
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   env:
-    CF_TARGET:
-    SPRING_PROFILES_ACTIVE: cloud
+    SPRING_APPLICATION_NAME: redis-dev
+    SPRING_CLOUD_CONFIG_PASSWORD: cloudfoundry
+    SPRING_CLOUD_CONFIG_URI: http://config-server.cf.dev.eu-de-central.msh.host
+    SPRING_CLOUD_CONFIG_USERNAME: admin
+    SPRING_PROFILES_ACTIVE: development,central-dev
     JAVA_OPTS: -Djava.security.egd=file:/dev/urandom
