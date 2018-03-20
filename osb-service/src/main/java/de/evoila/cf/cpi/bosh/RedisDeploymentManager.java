@@ -23,7 +23,6 @@ public class RedisDeploymentManager extends DeploymentManager {
     @Override
     protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan, Map<String, String> customParameters) {
         HashMap<String, Object> properties = new HashMap<>();
-        properties.putAll(plan.getMetadata().getCustomParameters());
 
         if (customParameters != null && !customParameters.isEmpty())
             properties.putAll(customParameters);

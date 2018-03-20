@@ -50,13 +50,6 @@ public class RedisBoshPlatformService extends BoshPlatformService {
     // handled
     @Override
     protected void updateHosts(ServiceInstance serviceInstance, Plan plan, Deployment deployment) {
-        final int port;
-        if (plan.getMetadata().getCustomParameters().containsKey(RedisDeploymentManager.PORT)) {
-            port = (int) plan.getMetadata().getCustomParameters().get(RedisDeploymentManager.PORT);
-        } else {
-            port = defaultPort;
-        }
-
         List<Vm> vms = connection.connection().vms().listDetails("sb-" + serviceInstance.getId()).toBlocking().first();
         if(serviceInstance.getHosts() == null)
             serviceInstance.setHosts(new ArrayList<>());
@@ -64,11 +57,8 @@ public class RedisBoshPlatformService extends BoshPlatformService {
         serviceInstance.getHosts().clear();
 
         vms.forEach(vm -> {
-            serviceInstance.getHosts().add(new ServerAddress("Host-" + vm.getIndex(), vm.getIps().get(0), port));
+            serviceInstance.getHosts().add(new ServerAddress("Host-" + vm.getIndex(), vm.getIps().get(0), defaultPort));
         });
     }
-
-    @Override
-    public void postDeleteInstance(ServiceInstance serviceInstance) throws PlatformException {}
-
+    
 }
