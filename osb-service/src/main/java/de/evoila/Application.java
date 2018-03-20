@@ -3,8 +3,6 @@
  */
 package de.evoila;
 
-import de.evoila.cf.cpi.custom.props.DomainBasedCustomPropertyHandler;
-import de.evoila.cf.cpi.custom.props.RedisCustomPropertyHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,11 +34,6 @@ public class Application {
         customProperties.put("database_name", "admin");
 
         return customProperties;
-    }
-
-    @Bean
-    public DomainBasedCustomPropertyHandler domainPropertyHandler() {
-        return new RedisCustomPropertyHandler();
     }
 
     public static void main(String[] args) {
