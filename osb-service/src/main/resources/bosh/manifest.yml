@@ -21,6 +21,8 @@ stemcells:
 instance_groups:
 - name: redis
   instances: 3
+  azs:
+  - z1
   jobs:
   - name: redis
     release: osb-redis
@@ -36,6 +38,8 @@ instance_groups:
 - name: cluster-configuration
   instances: 1
   lifecycle: errand
+  azs:
+  - z1
   jobs:
   - name: cluster-config
     release: osb-redis
