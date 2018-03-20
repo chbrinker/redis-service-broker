@@ -60,5 +60,8 @@ public class RedisBoshPlatformService extends BoshPlatformService {
             serviceInstance.getHosts().add(new ServerAddress("Host-" + vm.getIndex(), vm.getIps().get(0), defaultPort));
         });
     }
-    
+
+    @Override
+    public void postDeleteInstance(ServiceInstance serviceInstance) throws PlatformException {}
+
 }
