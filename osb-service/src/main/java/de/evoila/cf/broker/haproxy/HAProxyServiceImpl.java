@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.evoila.cf.broker.custom;
+package de.evoila.cf.broker.haproxy;
 
 import de.evoila.cf.broker.model.Mode;
 import de.evoila.cf.broker.model.ServerAddress;
