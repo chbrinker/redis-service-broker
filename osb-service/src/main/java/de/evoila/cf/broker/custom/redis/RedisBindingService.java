@@ -7,6 +7,7 @@ import de.evoila.cf.broker.exception.ServiceBrokerException;
 import de.evoila.cf.broker.model.*;
 import de.evoila.cf.broker.service.impl.BindingServiceImpl;
 import de.evoila.cf.broker.util.RandomString;
+import de.evoila.cf.broker.util.ServiceInstanceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,32 +24,25 @@ public class RedisBindingService extends BindingServiceImpl {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
     private static String URI = "uri";
-    private static String USERNAME = "user";
     private static String PASSWORD = "password";
-    private static String DATABASE = "database";
-    private static String HOST = "host";
-    private static String PORT = "port";
 
     private RandomString randomStringPassword = new RandomString(15);
 
-	protected Map<String, Object> createCredentials(String bindingId, ServiceInstance serviceInstance,
-			List<ServerAddress> hosts) {
+    @Override
+	protected Map<String, Object> createCredentials(String bindingId, ServiceInstance serviceInstance, Plan plan,
+			ServerAddress host) {
 
-        String formattedHosts = "";
-        for (ServerAddress host : hosts) {
-            if (formattedHosts.length() > 0)
-                formattedHosts = formattedHosts.concat(",");
+        String endpoint = ServiceInstanceUtils.connectionUrl(serviceInstance.getHosts());
 
-            formattedHosts += String.format("%s:%d", host.getIp(), host.getPort());
-        }
+        // When host is not empty, it is a service key
+        if (host != null)
+            endpoint = host.getIp() + ":" + host.getPort();
 
-        String dbURL = String.format("redis://%s", formattedHosts);
+        String dbURL = String.format("redis://%s", endpoint);
 
 		Map<String, Object> credentials = new HashMap<>();
 		credentials.put(URI, dbURL);
         credentials.put(PASSWORD, randomStringPassword.nextString());
-        credentials.put(HOST, formattedHosts);
-        credentials.put(PORT, hosts.get(0).getPort());
 
 		return credentials;
 	}
@@ -57,15 +51,6 @@ public class RedisBindingService extends BindingServiceImpl {
 	public ServiceInstanceBinding getServiceInstanceBinding(String id) {
 		throw new UnsupportedOperationException();
 	}
-
-    @Override
-    protected Map<String, Object> createCredentials(String bindingId, ServiceInstance serviceInstance,
-                                                    ServerAddress host, Plan plan) {
-        List<ServerAddress> hosts = new ArrayList<>();
-        hosts.add(host);
-
-        return createCredentials(bindingId, serviceInstance, hosts);
-    }
 
     @Override
     protected void deleteBinding(ServiceInstanceBinding binding, ServiceInstance serviceInstance, Plan plan)  {}
