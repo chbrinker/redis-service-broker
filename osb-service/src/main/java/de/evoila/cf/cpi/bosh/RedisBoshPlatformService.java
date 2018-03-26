@@ -29,7 +29,7 @@ public class RedisBoshPlatformService extends BoshPlatformService {
 
     RedisBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
                              ServicePortAvailabilityVerifier availabilityVerifier,
-                             BoshProperties boshProperties, Optional<DashboardClient> dashboardClient) throws PlatformException {
+                             BoshProperties boshProperties, Optional<DashboardClient> dashboardClient) {
         super(repository, catalogService, availabilityVerifier, boshProperties, dashboardClient, new RedisDeploymentManager(boshProperties));
     }
 
@@ -57,6 +57,6 @@ public class RedisBoshPlatformService extends BoshPlatformService {
     }
 
     @Override
-    public void postDeleteInstance(ServiceInstance serviceInstance) throws PlatformException {}
+    public void postDeleteInstance(ServiceInstance serviceInstance) {}
 
 }

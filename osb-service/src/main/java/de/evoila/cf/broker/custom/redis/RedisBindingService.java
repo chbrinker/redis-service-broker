@@ -29,8 +29,8 @@ public class RedisBindingService extends BindingServiceImpl {
     private RandomString randomStringPassword = new RandomString(15);
 
     @Override
-	protected Map<String, Object> createCredentials(String bindingId, ServiceInstance serviceInstance, Plan plan,
-			ServerAddress host) {
+	protected Map<String, Object> createCredentials(String bindingId, ServiceInstanceBindingRequest serviceInstanceBindingRequest,
+                                                    ServiceInstance serviceInstance, Plan plan, ServerAddress host) {
 
         String endpoint = ServiceInstanceUtils.connectionUrl(serviceInstance.getHosts());
 
