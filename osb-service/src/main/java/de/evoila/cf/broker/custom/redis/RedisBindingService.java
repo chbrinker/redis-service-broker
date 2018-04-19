@@ -25,6 +25,8 @@ public class RedisBindingService extends BindingServiceImpl {
 
     private static String URI = "uri";
     private static String PASSWORD = "password";
+    private static String HOST = "host";
+    private static String PORT = "port"
 
     private RandomString randomStringPassword = new RandomString(15);
 
@@ -42,6 +44,8 @@ public class RedisBindingService extends BindingServiceImpl {
 
 		Map<String, Object> credentials = new HashMap<>();
 		credentials.put(URI, dbURL);
+		credentials.put(HOST, ServiceInstanceUtils.hostList(serviceInstance.getHosts()));
+		credentials.put(PORT, ServiceInstanceUtils.portList(serviceInstance.getHosts()));
         credentials.put(PASSWORD, randomStringPassword.nextString());
 
 		return credentials;
