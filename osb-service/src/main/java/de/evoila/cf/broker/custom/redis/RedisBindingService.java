@@ -26,7 +26,7 @@ public class RedisBindingService extends BindingServiceImpl {
     private static String URI = "uri";
     private static String PASSWORD = "password";
     private static String HOST = "host";
-    private static String PORT = "port"
+    private static String PORT = "port";
 
     private RandomString randomStringPassword = new RandomString(15);
 
