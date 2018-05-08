@@ -13,10 +13,10 @@ releases:
   url: https://s3.eu-central-1.amazonaws.com/monitoring-boshrelease-pipeline-ev/osb-monitoring-0.0.3.tgz
   name: osb-monitoring
   version: 0.0.3
-- sha1: c6f9f8819842f59a9a06aa7c4e91bdcc8500bfba
-  url: https://s3.eu-central-1.amazonaws.com/redis-boshrelease-pipeline-ev/osb-redis-0.0.1.tgz
-  name: osb-redis
-  version: 0.0.1
+- sha1: 2e3ccf1b1daff512c2732a205809ebd013d1c680
+  url: https://s3.eu-central-1.amazonaws.com/redis-boshrelease-pipeline-ev/osb-bosh-redis-0.0.2.tgz
+  name: osb-bosh-redis
+  version: 0.0.2
 update:
   canaries: 1
   canary_watch_time: 15000-30000
