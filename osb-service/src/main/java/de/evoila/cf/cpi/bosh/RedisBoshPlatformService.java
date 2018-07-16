@@ -14,6 +14,7 @@ import io.bosh.client.errands.ErrandSummary;
 import io.bosh.client.tasks.Task;
 import io.bosh.client.vms.Vm;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
@@ -29,8 +30,10 @@ public class RedisBoshPlatformService extends BoshPlatformService {
 
     RedisBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
                              ServicePortAvailabilityVerifier availabilityVerifier,
-                             BoshProperties boshProperties, Optional<DashboardClient> dashboardClient) {
-        super(repository, catalogService, availabilityVerifier, boshProperties, dashboardClient, new RedisDeploymentManager(boshProperties));
+                             BoshProperties boshProperties, Optional<DashboardClient> dashboardClient, Environment environment) {
+        super(repository, catalogService,
+                availabilityVerifier, boshProperties,
+                dashboardClient, new RedisDeploymentManager(boshProperties, environment));
     }
 
     public void runCreateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) throws PlatformException {

@@ -5,6 +5,7 @@ import de.evoila.cf.broker.model.Plan;
 import de.evoila.cf.broker.model.ServiceInstance;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
+import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +17,8 @@ public class RedisDeploymentManager extends DeploymentManager {
     public static final String REDIS_PASSWORD = "password";
     public static final String PORT = "port";
 
-    RedisDeploymentManager(BoshProperties boshProperties){
-        super(boshProperties);
+    RedisDeploymentManager(BoshProperties boshProperties, Environment environment){
+        super(boshProperties, environment);
     }
 
     @Override
