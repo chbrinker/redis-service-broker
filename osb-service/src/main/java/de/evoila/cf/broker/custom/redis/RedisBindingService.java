@@ -24,31 +24,36 @@ public class RedisBindingService extends BindingServiceImpl {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
     private static String URI = "uri";
-    private static String PASSWORD = "password";
-    private static String HOST = "host";
-    private static String PORT = "port";
-
-    private RandomString randomStringPassword = new RandomString(15);
 
     @Override
 	protected Map<String, Object> createCredentials(String bindingId, ServiceInstanceBindingRequest serviceInstanceBindingRequest,
-                                                    ServiceInstance serviceInstance, Plan plan, ServerAddress host) {
+                                                    ServiceInstance serviceInstance, Plan plan, ServerAddress host) throws ServiceBrokerException {
 
-        String endpoint = ServiceInstanceUtils.connectionUrl(serviceInstance.getHosts());
+        List<ServerAddress> serverAddresses = null;
+        if (plan.getMetadata().getIngressInstanceGroup() != null && host == null)
+            serverAddresses = ServiceInstanceUtils.filteredServerAddress(serviceInstance.getHosts(),
+                    plan.getMetadata().getIngressInstanceGroup());
+        else if (host != null)
+            serverAddresses = Arrays.asList(new ServerAddress("service-key-haproxy", host.getIp(), host.getPort()));
+        else
+            serverAddresses = serviceInstance.getHosts();
 
-        // When host is not empty, it is a service key
-        if (host != null)
-            endpoint = host.getIp() + ":" + host.getPort();
+        if (serverAddresses == null || serverAddresses.size() == 0)
+            throw new ServiceBrokerException("Could not find any Service Backends to create Service Binding");
 
-        String dbURL = String.format("redis://%s", endpoint);
+        String endpoint = ServiceInstanceUtils.connectionUrl(serverAddresses);
 
-		Map<String, Object> credentials = new HashMap<>();
-		credentials.put(URI, dbURL);
-		credentials.put(HOST, ServiceInstanceUtils.hostList(serviceInstance.getHosts()));
-		credentials.put(PORT, ServiceInstanceUtils.portList(serviceInstance.getHosts()));
-        credentials.put(PASSWORD, randomStringPassword.nextString());
+        // This needs to be done here and can't be generalized due to the fact that each backend
+        // may have a different URL setup
+        Map<String, Object> configurations = new HashMap<>();
+        configurations.put(URI, String.format("mysql://%s@%s", serviceInstance.getPassword(), endpoint));
 
-		return credentials;
+        Map<String, Object> credentials = ServiceInstanceUtils.bindingObject(serviceInstance.getHosts(),
+                null,
+                serviceInstance.getPassword(),
+                configurations);
+
+        return credentials;
 	}
 
 	@Override
@@ -57,7 +62,7 @@ public class RedisBindingService extends BindingServiceImpl {
 	}
 
     @Override
-    protected void deleteBinding(ServiceInstanceBinding binding, ServiceInstance serviceInstance, Plan plan)  {}
+    protected void unbindService(ServiceInstanceBinding binding, ServiceInstance serviceInstance, Plan plan)  {}
 
     @Override
     protected RouteBinding bindRoute(ServiceInstance serviceInstance, String route) {

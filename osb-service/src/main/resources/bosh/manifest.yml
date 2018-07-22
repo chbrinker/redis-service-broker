@@ -4,7 +4,7 @@
 name: redis
 
 releases:
-- name: osb-redis
+- name: osb-bosh-redis
   version: latest
 
 update:
@@ -25,7 +25,7 @@ instance_groups:
   - z1
   jobs:
   - name: redis
-    release: osb-redis
+    release: osb-bosh-redis
   vm_type: default
   stemcell: default
   persistent_disk_type: default
@@ -42,7 +42,7 @@ instance_groups:
   - z1
   jobs:
   - name: cluster-config
-    release: osb-redis
+    release: osb-bosh-redis
   vm_type: default
   stemcell: default
   persistent_disk_type: default
