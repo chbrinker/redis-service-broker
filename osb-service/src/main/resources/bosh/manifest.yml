@@ -1,6 +1,4 @@
 ---
-# https://bosh.io/docs/cli-v2.html#deployment-mgmt
-
 name: redis
 
 releases:
@@ -17,7 +15,6 @@ stemcells:
 - alias: default
   os: ubuntu-trusty
 
-############################################################
 instance_groups:
 - name: redis
   instances: 3
@@ -26,11 +23,11 @@ instance_groups:
   jobs:
   - name: redis
     release: osb-bosh-redis
-  vm_type: default
+  vm_type: small
   stemcell: default
-  persistent_disk_type: default
+  persistent_disk_type: 5GB
   networks:
-  - name: default
+  - name: service
   properties:
     redis:
       password: random123
@@ -43,8 +40,7 @@ instance_groups:
   jobs:
   - name: cluster-config
     release: osb-bosh-redis
-  vm_type: default
+  vm_type: minimal
   stemcell: default
-  persistent_disk_type: default
   networks:
-  - name: default
+  - name: service

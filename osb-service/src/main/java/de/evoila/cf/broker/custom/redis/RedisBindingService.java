@@ -46,7 +46,7 @@ public class RedisBindingService extends BindingServiceImpl {
         // This needs to be done here and can't be generalized due to the fact that each backend
         // may have a different URL setup
         Map<String, Object> configurations = new HashMap<>();
-        configurations.put(URI, String.format("mysql://%s@%s", serviceInstance.getPassword(), endpoint));
+        configurations.put(URI, String.format("redis://%s@%s", serviceInstance.getPassword(), endpoint));
 
         Map<String, Object> credentials = ServiceInstanceUtils.bindingObject(serviceInstance.getHosts(),
                 null,
