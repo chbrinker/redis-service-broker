@@ -4,7 +4,6 @@ import de.evoila.cf.broker.bean.BoshProperties;
 import de.evoila.cf.broker.exception.PlatformException;
 import de.evoila.cf.broker.model.DashboardClient;
 import de.evoila.cf.broker.model.Plan;
-import de.evoila.cf.broker.model.ServerAddress;
 import de.evoila.cf.broker.model.ServiceInstance;
 import de.evoila.cf.broker.repository.PlatformRepository;
 import de.evoila.cf.broker.service.CatalogService;
