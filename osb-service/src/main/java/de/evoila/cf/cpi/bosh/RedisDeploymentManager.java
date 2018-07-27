@@ -24,7 +24,8 @@ public class RedisDeploymentManager extends DeploymentManager {
     @Override
     protected void replaceParameters(ServiceInstance serviceInstance, Manifest manifest, Plan plan, Map<String, Object> customParameters) {
         HashMap<String, Object> properties = new HashMap<>();
-        properties.putAll(plan.getMetadata().getCustomParameters());
+        if (customParameters != null && !customParameters.isEmpty())
+            properties.putAll(customParameters);
 
         if (customParameters != null && !customParameters.isEmpty())
             properties.putAll(customParameters);
@@ -33,6 +34,7 @@ public class RedisDeploymentManager extends DeploymentManager {
                 .stream()
                 .filter(i -> i.getName().equals(INSTANCE_GROUP))
                 .findAny().get().getProperties();
+
         HashMap<String, Object> redis = (HashMap<String, Object>) manifestProperties.get("redis");
 
         String randomPassword = UUID.randomUUID().toString().replace("-", "");
