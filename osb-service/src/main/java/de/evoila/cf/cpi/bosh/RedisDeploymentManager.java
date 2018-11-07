@@ -3,13 +3,13 @@ package de.evoila.cf.cpi.bosh;
 import de.evoila.cf.broker.bean.BoshProperties;
 import de.evoila.cf.broker.model.Plan;
 import de.evoila.cf.broker.model.ServiceInstance;
+import de.evoila.cf.config.security.credhub.CredhubClient;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
 import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class RedisDeploymentManager extends DeploymentManager {
 
@@ -17,8 +17,11 @@ public class RedisDeploymentManager extends DeploymentManager {
     public static final String REDIS_PASSWORD = "password";
     public static final String PORT = "port";
 
-    RedisDeploymentManager(BoshProperties boshProperties, Environment environment){
+    private CredhubClient credhubClient;
+
+    RedisDeploymentManager(BoshProperties boshProperties, Environment environment, CredhubClient credhubClient){
         super(boshProperties, environment);
+        this.credhubClient = credhubClient;
     }
 
     @Override
@@ -37,9 +40,9 @@ public class RedisDeploymentManager extends DeploymentManager {
 
         HashMap<String, Object> redis = (HashMap<String, Object>) manifestProperties.get("redis");
 
-        String randomPassword = UUID.randomUUID().toString().replace("-", "");
-        serviceInstance.setPassword(randomPassword);
-        redis.put(REDIS_PASSWORD, randomPassword);
+        credhubClient.createPassword(serviceInstance.getId(), "redisPassword");
+
+        redis.put(REDIS_PASSWORD, "((redisPassword))");
 
         this.updateInstanceGroupConfiguration(manifest, plan);
     }
