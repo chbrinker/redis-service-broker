@@ -11,13 +11,16 @@ import de.evoila.cf.broker.repository.ServiceDefinitionRepository;
 import de.evoila.cf.broker.repository.ServiceInstanceRepository;
 import de.evoila.cf.broker.service.HAProxyService;
 import de.evoila.cf.broker.service.impl.BindingServiceImpl;
-import de.evoila.cf.broker.util.RandomString;
 import de.evoila.cf.broker.util.ServiceInstanceUtils;
+import de.evoila.cf.config.security.credhub.CredhubClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Johannes Hiemer.
@@ -30,8 +33,12 @@ public class RedisBindingService extends BindingServiceImpl {
 
     private static String URI = "uri";
 
-    public RedisBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository, ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository, HAProxyService haProxyService) {
+    private CredhubClient credhubClient;
+
+    public RedisBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository, ServiceInstanceRepository serviceInstanceRepository,
+                               RouteBindingRepository routeBindingRepository, HAProxyService haProxyService, CredhubClient credhubClient) {
         super(bindingRepository, serviceDefinitionRepository, serviceInstanceRepository, routeBindingRepository, haProxyService);
+        this.credhubClient = credhubClient;
     }
 
     @Override
@@ -59,7 +66,7 @@ public class RedisBindingService extends BindingServiceImpl {
 
         Map<String, Object> credentials = ServiceInstanceUtils.bindingObject(serviceInstance.getHosts(),
                 null,
-                serviceInstance.getPassword(),
+                credhubClient.getPassword(serviceInstance.getId(), "redisPassword"),
                 configurations);
 
         return credentials;
