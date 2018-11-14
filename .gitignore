@@ -23,6 +23,7 @@ ca.pem
 *.pem
 *.iml
 *.idea/
+manifest.yml
 *manifest-with-credentials.yml
 *.pid
 *logging.file_IS_UNDEFINED
