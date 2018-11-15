@@ -6,9 +6,3 @@ spring:
       host: "${MONGODB_HOST}"
 haproxy:
   uri: "https://${HAPROXY-AGENT_HOST}/agents/${HAPROXY-AGENT_ID}/schemas?type=listen"
-
-
-logging:
-  level:
-    root: DEBUG
-    org.apache.http.wire: DEBUG
