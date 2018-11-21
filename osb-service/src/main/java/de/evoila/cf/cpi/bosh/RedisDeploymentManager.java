@@ -1,11 +1,11 @@
 package de.evoila.cf.cpi.bosh;
 
 import de.evoila.cf.broker.bean.BoshProperties;
-import de.evoila.cf.broker.model.Plan;
 import de.evoila.cf.broker.model.ServiceInstance;
-import de.evoila.cf.config.security.credhub.CredhubClient;
+import de.evoila.cf.broker.model.catalog.plan.Plan;
 import de.evoila.cf.cpi.bosh.deployment.DeploymentManager;
 import de.evoila.cf.cpi.bosh.deployment.manifest.Manifest;
+import de.evoila.cf.security.credhub.CredhubClient;
 import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
