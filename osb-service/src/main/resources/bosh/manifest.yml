@@ -1,20 +1,22 @@
 ---
 name: redis
-
 releases:
-- name: osb-bosh-redis
-  version: latest
-
+- sha1: 14e68f8ca86813971f9dcb29fd4ec8b12362a5f7
+  url: https://s3.eu-central-1.amazonaws.com/redis-boshrelease-pipeline-ev/osb-bosh-redis-0.1.24.tgz
+  name: osb-bosh-redis
+  version: 0.1.24
+- sha1: 9cd2e934f6f1d3f1f0031399fac2a62d5516b81e
+  url: https://s3.eu-central-1.amazonaws.com/monitoring-boshrelease-pipeline-ev/osb-bosh-monitoring-1.0.0.tgz
+  name: osb-bosh-monitoring
+  version: 1.0.0
 update:
   canaries: 1
   max_in_flight: 2
   canary_watch_time: 1000-30000
   update_watch_time: 1000-30000
-
 stemcells:
 - alias: default
   os: ubuntu-trusty
-
 instance_groups:
 - name: redis
   instances: 3
@@ -31,7 +33,6 @@ instance_groups:
   properties:
     redis:
       password: random123
-
 - name: cluster-configuration
   instances: 1
   lifecycle: errand
