@@ -1,6 +1,3 @@
-/**
- * 
- */
 package de.evoila.cf.broker.haproxy;
 
 import de.evoila.cf.broker.bean.HAProxyConfiguration;
@@ -15,7 +12,6 @@ import java.util.List;
 
 /**
  * @author Rene Schollmeyer
- *
  */
 @Service
 @ConditionalOnBean(HAProxyConfiguration.class)

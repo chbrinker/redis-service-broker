@@ -8,7 +8,7 @@ import de.evoila.cf.broker.model.catalog.plan.Plan;
 import de.evoila.cf.broker.repository.PlatformRepository;
 import de.evoila.cf.broker.service.CatalogService;
 import de.evoila.cf.broker.service.availability.ServicePortAvailabilityVerifier;
-import de.evoila.cf.security.credhub.CredhubClient;
+import de.evoila.cf.security.credentials.CredentialStore;
 import io.bosh.client.deployments.Deployment;
 import io.bosh.client.errands.ErrandSummary;
 import io.bosh.client.tasks.Task;
@@ -21,31 +21,35 @@ import rx.Observable;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Johannes Hiemer.
+ */
 @Service
 @ConditionalOnBean(BoshProperties.class)
 public class RedisBoshPlatformService extends BoshPlatformService {
 
     private static final int defaultPort = 6379;
 
-    private CredhubClient credhubClient;
+    private CredentialStore credentialStore;
 
     RedisBoshPlatformService(PlatformRepository repository, CatalogService catalogService,
                              ServicePortAvailabilityVerifier availabilityVerifier,
-                             BoshProperties boshProperties, Optional<DashboardClient> dashboardClient, Environment environment, CredhubClient credhubClient) {
+                             BoshProperties boshProperties, Optional<DashboardClient> dashboardClient,
+                             Environment environment, CredentialStore credentialStore) {
         super(repository, catalogService,
                 availabilityVerifier, boshProperties,
-                dashboardClient, new RedisDeploymentManager(boshProperties, environment, credhubClient));
-        this.credhubClient = credhubClient;
+                dashboardClient, new RedisDeploymentManager(boshProperties, environment, credentialStore));
+        this.credentialStore = credentialStore;
     }
 
     public void runCreateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) throws PlatformException {
-        Task task = super.connection.connection().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
+        Task task = boshClient.client().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
         super.waitForTaskCompletion(task);
 
     }
 
     protected void runUpdateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) throws PlatformException {
-        Task task = super.connection.connection().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
+        Task task = boshClient.client().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
         super.waitForTaskCompletion(task);
     }
 
@@ -61,7 +65,7 @@ public class RedisBoshPlatformService extends BoshPlatformService {
 
     @Override
     public void postDeleteInstance(ServiceInstance serviceInstance) {
-        credhubClient.deleteCredentials(serviceInstance.getId(), "redisPassword");
+        credentialStore.deleteCredentials(serviceInstance.getId(), CredentialConstants.REDIS_PASSWORD);
     }
 
 }

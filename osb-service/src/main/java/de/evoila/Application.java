@@ -1,6 +1,3 @@
-/**
- * 
- */
 package de.evoila;
 
 import org.springframework.boot.SpringApplication;
@@ -14,9 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
 /**
- * 
  * @author Johannes Hiemer.
- *
  */
 @RefreshScope
 @SpringBootApplication

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package de.evoila.cf.broker.custom.redis;
 
 import de.evoila.cf.broker.exception.ServiceBrokerException;
@@ -15,7 +12,8 @@ import de.evoila.cf.broker.service.AsyncBindingService;
 import de.evoila.cf.broker.service.HAProxyService;
 import de.evoila.cf.broker.service.impl.BindingServiceImpl;
 import de.evoila.cf.broker.util.ServiceInstanceUtils;
-import de.evoila.cf.security.credhub.CredhubClient;
+import de.evoila.cf.cpi.bosh.CredentialConstants;
+import de.evoila.cf.security.credentials.CredentialStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,6 @@ import java.util.Map;
 
 /**
  * @author Johannes Hiemer.
- *
  */
 @Service
 public class RedisBindingService extends BindingServiceImpl {
@@ -36,13 +33,18 @@ public class RedisBindingService extends BindingServiceImpl {
 
     private static String URI = "uri";
 
-    private CredhubClient credhubClient;
+    private CredentialStore credentialStore;
 
-    public RedisBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository, ServiceInstanceRepository serviceInstanceRepository,
-                               RouteBindingRepository routeBindingRepository, HAProxyService haProxyService, CredhubClient credhubClient, JobRepository jobRepository,
-                               AsyncBindingService asyncBindingService, PlatformRepository platformRepository) {
-        super(bindingRepository, serviceDefinitionRepository, serviceInstanceRepository, routeBindingRepository, haProxyService, jobRepository, asyncBindingService, platformRepository);
-        this.credhubClient = credhubClient;
+    public RedisBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
+                               ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository,
+                               HAProxyService haProxyService, CredentialStore credentialStore,
+                               JobRepository jobRepository, AsyncBindingService asyncBindingService,
+                               PlatformRepository platformRepository) {
+        super(bindingRepository, serviceDefinitionRepository,
+                serviceInstanceRepository, routeBindingRepository,
+                haProxyService, jobRepository,
+                asyncBindingService, platformRepository);
+        this.credentialStore = credentialStore;
     }
 
     @Override
@@ -65,13 +67,12 @@ public class RedisBindingService extends BindingServiceImpl {
 
         // This needs to be done here and can't be generalized due to the fact that each backend
         // may have a different URL setup
+        String password = credentialStore.getPassword(serviceInstance, CredentialConstants.REDIS_PASSWORD);
         Map<String, Object> configurations = new HashMap<>();
-        configurations.put(URI, String.format("redis://%s@%s", serviceInstance.getPassword(), endpoint));
+        configurations.put(URI, String.format("redis://%s@%s", password, endpoint));
 
         Map<String, Object> credentials = ServiceInstanceUtils.bindingObject(serviceInstance.getHosts(),
-                null,
-                credhubClient.getPassword(serviceInstance.getId(), "redisPassword"),
-                configurations);
+                null, password, configurations);
 
         return credentials;
 	}
