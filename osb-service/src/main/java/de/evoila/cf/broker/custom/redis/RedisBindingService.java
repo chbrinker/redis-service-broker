@@ -29,7 +29,7 @@ import java.util.Map;
 @Service
 public class RedisBindingService extends BindingServiceImpl {
 
-	private Logger log = LoggerFactory.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private static String URI = "uri";
 
@@ -37,7 +37,7 @@ public class RedisBindingService extends BindingServiceImpl {
 
     public RedisBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
                                ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository,
-                               HAProxyService haProxyService, CredentialStore credentialStore,
+                               @Autowired(required = false) HAProxyService haProxyService, CredentialStore credentialStore,
                                JobRepository jobRepository, AsyncBindingService asyncBindingService,
                                PlatformRepository platformRepository) {
         super(bindingRepository, serviceDefinitionRepository,
