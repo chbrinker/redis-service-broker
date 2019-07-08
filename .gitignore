@@ -30,3 +30,4 @@ manifest.yml
 cf-service-broker-redis/.springWebflow
 osb-service/src/main/resources/static/*
 osb-service/src/main/resources/templates/*
+application-local.yml
