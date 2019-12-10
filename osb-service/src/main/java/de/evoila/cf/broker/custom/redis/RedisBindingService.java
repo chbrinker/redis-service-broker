@@ -9,14 +9,12 @@ import de.evoila.cf.broker.model.catalog.ServerAddress;
 import de.evoila.cf.broker.model.catalog.plan.Plan;
 import de.evoila.cf.broker.repository.*;
 import de.evoila.cf.broker.service.AsyncBindingService;
-import de.evoila.cf.broker.service.HAProxyService;
 import de.evoila.cf.broker.service.impl.BindingServiceImpl;
 import de.evoila.cf.broker.util.ServiceInstanceUtils;
 import de.evoila.cf.cpi.bosh.CredentialConstants;
 import de.evoila.cf.security.credentials.CredentialStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -38,12 +36,12 @@ public class RedisBindingService extends BindingServiceImpl {
 
     public RedisBindingService(BindingRepository bindingRepository, ServiceDefinitionRepository serviceDefinitionRepository,
                                ServiceInstanceRepository serviceInstanceRepository, RouteBindingRepository routeBindingRepository,
-                               @Autowired(required = false) HAProxyService haProxyService, CredentialStore credentialStore,
+                               CredentialStore credentialStore,
                                JobRepository jobRepository, AsyncBindingService asyncBindingService,
                                PlatformRepository platformRepository) {
         super(bindingRepository, serviceDefinitionRepository,
                 serviceInstanceRepository, routeBindingRepository,
-                haProxyService, jobRepository,
+                jobRepository,
                 asyncBindingService, platformRepository);
         this.credentialStore = credentialStore;
     }
