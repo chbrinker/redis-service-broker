@@ -18,6 +18,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import rx.Observable;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,13 +45,13 @@ public class RedisBoshPlatformService extends BoshPlatformService {
 
     public void runCreateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) throws PlatformException {
         Task task = boshClient.client().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
-        super.waitForTaskCompletion(task);
+        super.waitForTaskCompletion(task,Instant.now().plusSeconds(1800));
 
     }
 
     protected void runUpdateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) throws PlatformException {
         Task task = boshClient.client().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
-        super.waitForTaskCompletion(task);
+        super.waitForTaskCompletion(task,Instant.now().plusSeconds(1800));
     }
 
     protected void runDeleteErrands(ServiceInstance instance, Deployment deployment, Observable<List<ErrandSummary>> errands) { }
