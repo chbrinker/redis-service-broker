@@ -45,13 +45,13 @@ public class RedisBoshPlatformService extends BoshPlatformService {
 
     public void runCreateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) throws PlatformException {
         Task task = boshClient.client().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
-        super.waitForTaskCompletion(task,Instant.now().plusSeconds(1800));
+        super.waitForTaskCompletion(task, Instant.now().plusSeconds(Integer.MAX_VALUE));
 
     }
 
     protected void runUpdateErrands(ServiceInstance instance, Plan plan, Deployment deployment, Observable<List<ErrandSummary>> errands) throws PlatformException {
         Task task = boshClient.client().errands().runErrand(deployment.getName(), "cluster-config").toBlocking().first();
-        super.waitForTaskCompletion(task,Instant.now().plusSeconds(1800));
+        super.waitForTaskCompletion(task, Instant.now().plusSeconds(Integer.MAX_VALUE));
     }
 
     protected void runDeleteErrands(ServiceInstance instance, Deployment deployment, Observable<List<ErrandSummary>> errands) { }
