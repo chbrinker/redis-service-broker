@@ -27,7 +27,7 @@
         <resource.dir>${basedir}/../osb-service/src/main/resources</resource.dir>
         <dashboard.module>mongodb</dashboard.module>
         <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
-        <junit-jupiter.version>5.7.1</junit-jupiter.version>
+        <junit-jupiter.version>5.5.2</junit-jupiter.version> <!-- keep in sync with jupiter libraries -->
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
